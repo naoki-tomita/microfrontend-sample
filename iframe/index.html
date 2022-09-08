@@ -8,40 +8,60 @@
 </head>
 <body>
   <div>
+    <input id="params" />
+  </div>
+  <div>
     <input id="height" type="number" value="250" />px <button id="change-height">高さを変える</button>
   </div>
   <div>
     <input id="title" value="デフォルト" /> <button id="change-title">タイトルを変更する</button>
   </div>
   <div>
-    <input id="message" value="メッセージ" /> <button id="send-message">Monolithにメッセージを送る</button>
+    <input id="message" value="デフォルトメッセージ" /> <button id="send-message">Monolithにメッセージを送る</button>
   </div>
   <script>
-    const queryParams = location.search.replace("?", "").split("&").map(it => it.split("=")).reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {});
-    const color = queryParams.color ?? "#fff";
-    document.body.style.backgroundColor = color;
+    function main(params) {
+      document.getElementById("params").value = params;
 
-    document.getElementById("change-height").addEventListener("click", () => {
-      document.body.style.height = `${document.getElementById("height").value}px`;
-    });
-    document.getElementById("change-title").addEventListener("click", () => {
-      const title = document.getElementById("title").value;
-      window.postMessage({ type: "title", data: title });
-    });
-    document.getElementById("send-message").addEventListener("click", () => {
-      const message = document.getElementById("message").value;
-      window.postMessage({ type: "message", data: message });
-    });
+      const queryParams = location.search
+        .replace("?", "")
+        .split("&")
+        .map(it => it.split("="))
+        .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {});
 
-    let lastHeight = 0;
-    setInterval(() => {
-      const currentHeight = document.documentElement.offsetHeight;
-      if (lastHeight !== currentHeight) {
-        window.postMessage({ type: "height", data: currentHeight });
-        lastHeight = currentHeight;
+      const color = queryParams.color ?? "#fff";
+      document.body.style.backgroundColor = color;
+
+      document.getElementById("change-height").addEventListener("click", () => {
+        document.body.style.height = `${document.getElementById("height").value}px`;
+      });
+      document.getElementById("change-title").addEventListener("click", () => {
+        const title = document.getElementById("title").value;
+        window.postMessage({ type: "title", data: title });
+      });
+      document.getElementById("send-message").addEventListener("click", () => {
+        const message = document.getElementById("message").value;
+        window.postMessage({ type: "message", data: message });
+      });
+
+
+      // コンテンツの高さを定期的にチェックして変化があればpostMessageするスクリプト
+      let lastHeight = 0;
+      setInterval(() => {
+        const currentHeight = document.documentElement.offsetHeight;
+        if (lastHeight !== currentHeight) {
+          window.postMessage({ type: "height", data: currentHeight });
+          lastHeight = currentHeight;
+        }
+      }, 100);
+    }
+
+    window.addEventListener("message", ({ data: message }) => {
+      if (message.type === "params") {
+        main(message.data);
       }
-    }, 100);
-
+    });
+    window.postMessage({ type: "syn" })
   </script>
 </body>
 </html>
