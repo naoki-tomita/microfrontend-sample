@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モノリス</title>
+  <script src="../webcomponents/index.js"></script>
+  <style>
+    * {
+      margin: 0;
+    }
+    .body {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 50px 1fr 50px;
+      grid-template-columns: 80px 1fr;
+      grid-template-areas:
+        "header header header"
+        "submenu main main"
+        "footer footer footer";
+    }
+    header {
+      grid-area: header;
+      background-color: #ddd;
+      border-bottom: 1px solid #000;
+    }
+    .submenu {
+      grid-area: submenu;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #000;
+      background-color: #ddd;
+    }
+    main {
+      grid-area: main;
+    }
+    footer {
+      grid-area: footer;
+      border-top: 1px solid #000;
+      background-color: #ddd;
+    }
+    a {
+      font-size: 50px;
+      text-align: center;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="body">
+    <header>
+      <p>モノリス タイトル</p>
+    </header>
+    <div class="submenu">
+      <a href="#monolith">M</a>
+      <a href="#iframe">I</a>
+      <a href="#webcomponents">W</a>
+    </div>
+    <main>
+      <div id="app"></div>
+      <template id="monolith">
+        <p>これはモノリスの画面です</p>
+      </template>
+      <template id="iframe">
+        <p>これはiframeで作られたマイクロフロントエンドです</p>
+        ↓ここから
+        <iframe src="../iframe/?color=red" style="display: block; width: 100%" frameborder="no"></iframe>
+        ↑ここまで
+        <div>
+          受け取ったメッセージ <input />
+        </div>
+      </template>
+      <template id="webcomponents">
+        <p>これはWeb Componentsで作られたマイクロフロントエンドです</p>
+        ↓ここから
+        <sample-component color="red"></sample-component>
+        ↑ここまで
+        <div>
+          受け取ったメッセージ <input />
+        </div>
+      </template>
+    </main>
+    <footer>
+      <p>モノリス フッター</p>
+    </footer>
+  </div>
+  <script>
+    const appView = document.getElementById("app");
+    function showMonolith() {
+      appView.innerHTML = "";
+      appView.append(document.getElementById("monolith").content.cloneNode(true));
+    }
+
+    function showIframe() {
+      appView.innerHTML = "";
+      appView.append(document.getElementById("iframe").content.cloneNode(true));
+      const iframe = appView.querySelector("iframe");
+      iframe.contentWindow.addEventListener("message", ({ data: message }) => {
+        console.log(message);
+        switch (message.type) {
+          case "title":
+            document.title = message.data;
+            return;
+          case "height":
+            iframe.style.height = `${message.data}px`;
+            return;
+          case "message":
+            appView.querySelector("input").value = message.data;
+            return;
+        }
+      })
+    }
+
+    function showWebComponents() {
+      appView.innerHTML = "";
+      appView.append(document.getElementById("webcomponents").content.cloneNode(true));
+      appView.querySelector("sample-component").addEventListener("custom-message", (message) => {
+        appView.querySelector("input").value = message.detail;
+      });
+    }
+
+    window.addEventListener("hashchange", render);
+
+    function render() {
+      const hash = location.hash.replace("#", "");
+      switch(hash) {
+        case "monolith":
+          return showMonolith();
+        case "iframe":
+          return showIframe();
+        case "webcomponents":
+          return showWebComponents();
+        default:
+          location.hash = "#monolith"
+      }
+    }
+    render();
+  </script>
+</body>
+</html>
