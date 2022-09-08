@@ -27,7 +27,7 @@
         .replace("?", "")
         .split("&")
         .map(it => it.split("="))
-        .reduce((prev, [k, v]) => ({ ...prev, [k]: v }), {});
+        .reduce((prev, [k, v]) => ({ ...prev, [k]: decodeURIComponent(v) }), {});
 
       const color = queryParams.color ?? "#fff";
       document.body.style.backgroundColor = color;
