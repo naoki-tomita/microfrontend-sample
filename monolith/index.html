@@ -65,7 +65,12 @@
       <template id="iframe">
         <p>これはiframeで作られたマイクロフロントエンドです</p>
         ↓ここから
-        <iframe src="../iframe/?color=%23CBBDE3" data-params="これはdata-paramsに設定されたパラメータです" style="display: block; width: 100%" frameborder="no"></iframe>
+        <iframe
+          src="../iframe/?color=%23CBBDE3"
+          data-params="これはdata-paramsに設定されたパラメータです"
+          style="display: block; width: 100%"
+          frameborder="no"
+        ></iframe>
         ↑ここまで
         <div>
           受け取ったメッセージ <input />
@@ -96,6 +101,7 @@
       appView.innerHTML = "";
       appView.append(document.getElementById("iframe").content.cloneNode(true));
       const iframe = appView.querySelector("iframe");
+
       iframe.contentWindow.addEventListener("message", ({ data: message }) => {
         switch (message.type) {
           case "title":
