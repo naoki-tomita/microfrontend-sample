@@ -31,8 +31,12 @@ class SampleComponent extends HTMLElement {
         <div id="text"></div>
       </div>
     `;
+
+    // マイクロフロントエンドのJS
     this.wrapperEl = this.shadowRoot.getElementById("wrapper");
     this.wrapperEl.style.backgroundColor = this.getAttribute("color") ?? "#fff";
+
+
     this.heightInputEl = this.shadowRoot.getElementById("height");
     this.titleInputEl = this.shadowRoot.getElementById("title");
     this.messageInputEl = this.shadowRoot.getElementById("message");
@@ -50,10 +54,13 @@ class SampleComponent extends HTMLElement {
     document.title = this.titleInputEl.value;
   }
 
+  // マイクロフロントエンドのJS
   onSendMessageClick = () => {
     const event = new CustomEvent("custom-message", { detail: this.messageInputEl.value });
     this.dispatchEvent(event);
   }
+
+
 }
 
 customElements.define("sample-component", SampleComponent);

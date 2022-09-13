@@ -19,6 +19,12 @@
   <div>
     <input id="message" value="デフォルトメッセージ" /> <button id="send-message">Monolithにメッセージを送る</button>
   </div>
+  <p>
+    <a href="../monolith/#monolith">普通にリンクをつけた場合</a>
+  </p>
+  <p>
+    <a href="../monolith/#monolith" target="_parent">マイクロフロントエンドとしてリンクをつけた場合</a>
+  </p>
   <div id="text"></div>
   <script>
     function main(params) {
@@ -60,11 +66,14 @@
     // マイクロフロントエンドのJS
     window.addEventListener("message", ({ data: message }) => {
       if (message.type === "params") {
-        main(message.data);
+        // paramsを受け取ったときの処理をする
       }
     });
     // ↑でaddEventListenerの準備ができたので、モノリスに準備ができた旨を伝える
     window.postMessage({ type: "syn" })
+
+
+
   </script>
 </body>
 </html>

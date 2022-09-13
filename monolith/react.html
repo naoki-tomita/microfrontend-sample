@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モノリス</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+  <script src="../webcomponents/index.js"></script>
+  <style>
+    * {
+      margin: 0;
+    }
+    .body {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 50px 1fr 50px;
+      grid-template-columns: 80px 1fr;
+      grid-template-areas:
+        "header header header"
+        "submenu main main"
+        "footer footer footer";
+    }
+    header {
+      grid-area: header;
+      background-color: #ddd;
+      border-bottom: 1px solid #000;
+    }
+    .submenu {
+      grid-area: submenu;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #000;
+      background-color: #ddd;
+    }
+    main {
+      grid-area: main;
+    }
+    footer {
+      grid-area: footer;
+      border-top: 1px solid #000;
+      background-color: #ddd;
+    }
+    a {
+      font-size: 50px;
+      text-align: center;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const App = () => {
+      function onCustomMessage(e) {
+        console.log(e);
+      }
+
+      return (
+        <div className="body">
+          <header>
+            <p>モノリス タイトル</p>
+          </header>
+          <div className="submenu">
+            <a href="#monolith">M</a>
+            <a href="#iframe">I</a>
+            <a href="#webcomponents">W</a>
+          </div>
+          <main>
+            <div id="app"></div>
+
+            <sample-component
+              color="#CBBDE3"
+              ref={(el) => el.addEventListener("custom-message", (e) => setText(e.datail))}>
+            </sample-component>
+
+
+          </main>
+          <footer>
+            <p>モノリス フッター</p>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />)
+  </script>
+</body>
+</html>

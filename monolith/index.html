@@ -65,12 +65,23 @@
       <template id="iframe">
         <p>これはiframeで作られたマイクロフロントエンドです</p>
         ↓ここから
+
+
+
+
+        <!-- モノリスのHTML -->
         <iframe
           src="../iframe/?color=%23CBBDE3"
-          data-params="これはdata-paramsに設定されたパラメータです"
+          data-hoge="これはdata-hogeに設定されたパラメータです"
           style="display: block; width: 100%"
           frameborder="no"
         ></iframe>
+        <script>
+          // モノリスのJS
+          iframe.contentWindow.postMessage({ type: "params", data: iframe.dataset.hoge ?? "" });
+        </script>
+
+
         ↑ここまで
         <div>
           受け取ったメッセージ <input />
@@ -79,7 +90,13 @@
       <template id="webcomponents">
         <p>これはWeb Componentsで作られたマイクロフロントエンドです</p>
         ↓ここから
+
+
+        <!-- モノリスのHTML -->
         <sample-component color="#CBBDE3"></sample-component>
+
+
+
         ↑ここまで
         <div>
           受け取ったメッセージ <input />
@@ -102,8 +119,14 @@
       appView.append(document.getElementById("iframe").content.cloneNode(true));
       const iframe = appView.querySelector("iframe");
 
+      // モノリスのJS
       iframe.contentWindow.addEventListener("message", ({ data: message }) => {
         switch (message.type) {
+          case "syn":
+            iframe.contentWindow.postMessage({ type: "params", data: iframe.dataset.hoge ?? "" });
+            return;
+
+
           case "title":
             document.title = message.data;
             return;
@@ -113,9 +136,7 @@
           case "message":
             appView.querySelector("input").value = message.data;
             return;
-          case "syn":
-            iframe.contentWindow.postMessage({ type: "params", data: iframe.dataset.params ?? "" });
-            return;
+
         }
       });
 
@@ -124,9 +145,14 @@
     function showWebComponents() {
       appView.innerHTML = "";
       appView.append(document.getElementById("webcomponents").content.cloneNode(true));
-      appView.querySelector("sample-component").addEventListener("custom-message", (message) => {
+
+      // モノリスのJS
+      webcomponents.addEventListener("custom-message", (message) => {
         appView.querySelector("input").value = message.detail;
       });
+
+
+
     }
 
     window.addEventListener("hashchange", render);
