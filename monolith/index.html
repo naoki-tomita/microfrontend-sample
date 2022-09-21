@@ -126,8 +126,7 @@
     function showWebComponents() {
       appView.innerHTML = "";
       appView.append(document.getElementById("webcomponents").content.cloneNode(true));
-      // モノリスのJS
-      webcomponents.addEventListener("custom-message", (message) => {
+      document.querySelector("sample-component").addEventListener("custom-message", (message) => {
         appView.querySelector("input").value = message.detail;
       });
     }
